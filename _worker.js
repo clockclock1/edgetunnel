@@ -1339,454 +1339,173 @@ async function SOCKS5可用性验证(代理协议 = 'socks5', 代理参数) {
 async function nginx() {
     return `
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hand Tracking Particle System</title>
+    <title>极简导航 · 常用网站快速入口</title>
+    <meta name="description" content="个人常用网站导航，干净无广告。">
     <style>
-        body { margin: 0; overflow: hidden; background-color: #050505; font-family: 'Segoe UI', sans-serif; }
-        canvas { display: block; }
-       
-        /* UI Panel Styling */
-        #ui-container {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 280px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            z-index: 10;
-            transition: transform 0.3s ease;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #fafafa;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            line-height: 1.6;
         }
-        h2 { margin: 0 0 15px 0; font-size: 1.2rem; font-weight: 600; letter-spacing: 1px; }
-       
-        .control-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-size: 0.9rem; opacity: 0.8; }
-       
-        /* Buttons Grid */
-        .shape-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-       
-        button {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.85rem;
+        .container { max-width: 1000px; width: 100%; }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
         }
-       
-        button:hover, button.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
         }
-        /* Color Picker */
-        input[type="color"] {
+        .desc {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .search {
+            margin: 40px auto;
+            max-width: 560px;
+        }
+        .search input {
             width: 100%;
-            height: 40px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: transparent;
+            padding: 14px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s;
         }
-        /* Status Indicator */
-        #status {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: rgba(255,255,255,0.6);
+        .search input:focus {
+            border-color: #6e6eff;
+            box-shadow: 0 0 0 4px rgba(110,110,255,0.1);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .category {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: transform 0.2s;
+        }
+        .category:hover {
+            transform: translateY(-4px);
+        }
+        .category h3 {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            color: #444;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .links a {
+            color: #555;
+            text-decoration: none;
+            padding: 6px 0;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .links a:hover {
+            color: #6e6eff;
+            background: #f8f8ff;
+            padding-left: 8px;
+        }
+        
+        footer {
+            margin-top: 80px;
+            color: #999;
             font-size: 0.9rem;
-            pointer-events: none;
+            text-align: center;
         }
-        .dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: red;
-            border-radius: 50%;
-            margin-right: 8px;
+        @media (max-width: 640px) {
+            h1 { font-size: 2rem; }
+            .grid { grid-template-columns: 1fr; }
         }
-        .dot.active { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
-        /* Fullscreen Button */
-        .fs-btn { width: 100%; margin-top: 10px; font-weight: bold; }
-        /* Hidden Video for MediaPipe */
-        #input-video { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
     </style>
-   
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
-                "@mediapipe/hands": "https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js",
-                "@mediapipe/camera_utils": "https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
-            }
-        }
-    </script>
 </head>
 <body>
-    <div id="status"><span class="dot" id="cam-dot"></span><span id="status-text">初始化摄像头...</span></div>
-    <div id="ui-container">
-        <h2>粒子控制器</h2>
-       
-        <div class="control-group">
-            <label>切换形状 (Morph)</label>
-            <div class="shape-grid">
-                <button onclick="setShape('heart', this)" class="active">爱心</button>
-                <button onclick="setShape('flower', this)">花朵</button>
-                <button onclick="setShape('saturn', this)">土星</button>
-                <button onclick="setShape('torus', this)">佛系(环结)</button>
-                <button onclick="setShape('fireworks', this)">烟花</button>
-                <button onclick="setShape('sphere', this)">球体</button>
+    <div class="container">
+        <header>
+            <h1>极简导航</h1>
+            <p class="desc">个人常用网站集合 · 干净无广告</p>
+        </header>
+
+        <div class="search">
+            <input type="text" placeholder="搜点什么...（回车跳转谷歌）" onkeypress="if(event.key==='Enter') window.open('https://www.google.com/search?q='+encodeURIComponent(this.value))">
+        </div>
+
+        <div class="grid">
+            <div class="category">
+                <h3>开发</h3>
+                <div class="links">
+                    <a href="https://github.com" target="_blank">GitHub</a>
+                    <a href="https://stackoverflow.com" target="_blank">Stack Overflow</a>
+                    <a href="https://dev.to" target="_blank">Dev.to</a>
+                    <a href="https://vercel.com" target="_blank">Vercel</a>
+                </div>
+            </div>
+
+            <div class="category">
+                <h3>设计</h3>
+                <div class="links">
+                    <a href="https://dribbble.com" target="_blank">Dribbble</a>
+                    <a href="https://behance.net" target="_blank">Behance</a>
+                    <a href="https://figma.com" target="_blank">Figma</a>
+                    <a href="https://uiverse.io" target="_blank">UIverse</a>
+                </div>
+            </div>
+
+            <div class="category">
+                <h3>工具</h3>
+                <div class="links">
+                    <a href="https://chat.openai.com" target="_blank">ChatGPT</a>
+                    <a href="https://translate.google.com" target="_blank">谷歌翻译</a>
+                    <a href="https://temp-mail.org" target="_blank">临时邮箱</a>
+                    <a href="https://carbon.now.sh" target="_blank">Carbon</a>
+                </div>
+            </div>
+
+            <div class="category">
+                <h3>娱乐</h3>
+                <div class="links">
+                    <a href="https://youtube.com" target="_blank">YouTube</a>
+                    <a href="https://bilibili.com" target="_blank">Bilibili</a>
+                    <a href="https://netflix.com" target="_blank">Netflix</a>
+                    <a href="https://spotify.com" target="_blank">Spotify</a>
+                </div>
             </div>
         </div>
-        <div class="control-group">
-            <label>粒子颜色</label>
-            <input type="color" id="color-picker" value="#00ffff">
-        </div>
-        <div class="control-group">
-            <label>显示相机预览</label>
-            <input type="checkbox" id="preview-toggle">
-        </div>
-        <div class="control-group">
-            <label>性能模式（提速）</label>
-            <input type="checkbox" id="perf-toggle">
-        </div>
-        <button class="fs-btn" onclick="toggleFullScreen()">全屏模式</button>
+
+        <footer>
+            Just a simple navigation page.<br>
+            Updated December 2025
+        </footer>
     </div>
-    <video id="input-video" playsinline autoplay muted></video>
-
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-       
-        // 全局变量
-        let camera, scene, renderer, controls;
-        let particles, geometry, material;
-        let positions = [];
-        let currentPositions = [];
-        let targetPositions = [];
-        let jitter = [];
-        let hands, cameraUtils;
-        let HANDS_INTERVAL = 1000 / 30;
-        let performanceMode = false;
-       
-        const IS_LOW_END = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 4);
-        const PARTICLE_COUNT = 15000;
-        const BOX_SIZE = 400;
-        let currentShape = 'heart';
-       
-        // 手势控制变量
-        let handScale = 1.0;
-        let handSpread = 0.0;
-        let targetColor = new THREE.Color(0x00ffff);
-
-        init();
-        initMediaPipe();
-        animate();
-
-        function init() {
-            scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x050505, 0.002);
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-            camera.position.z = 100;
-            renderer = new THREE.WebGLRenderer({ antalias: true, powerPreference: 'high-performance' });
-            renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
-
-            controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.autoRotate = true;
-            controls.autoRotateSpeed = 0.5;
-
-            geometry = new THREE.BufferGeometry();
-            const posArray = new Float32Array(PARTICLE_COUNT * 3);
-            for(let i = 0; i < PARTICLE_COUNT * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * BOX_SIZE;
-            }
-            geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-           
-            currentPositions = posArray;
-            targetPositions = new Float32Array(PARTICLE_COUNT * 3);
-            jitter = new Float32Array(PARTICLE_COUNT * 3);
-            for(let i = 0; i < PARTICLE_COUNT * 3; i++) {
-                jitter[i] = (Math.random() - 0.5);
-            }
-
-            const sprite = createTexture();
-            material = new THREE.PointsMaterial({
-                size: 0.8,
-                color: targetColor,
-                map: sprite,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false,
-                transparent: true,
-                opacity: 0.85
-            });
-            particles = new THREE.Points(geometry, material);
-            scene.add(particles);
-
-            generateShape('heart');
-
-            window.addEventListener('resize', onWindowResize);
-            document.getElementById('color-picker').addEventListener('input', (e) => {
-                targetColor.set(e.target.value);
-            });
-            document.getElementById('preview-toggle').addEventListener('change', (e) => {
-                const v = document.getElementById('input-video');
-                if (e.target.checked) {
-                    v.style.opacity = '0.75';
-                    v.style.width = '200px';
-                    v.style.height = '150px';
-                    v.style.left = '20px';
-                    v.style.bottom = '20px';
-                    v.style.top = '';
-                    v.style.pointerEvents = 'none';
-                    v.style.zIndex = '9';
-                } else {
-                    v.style.opacity = '0';
-                    v.style.width = '1px';
-                    v.style.height = '1px';
-                }
-            });
-            document.getElementById('perf-toggle').addEventListener('change', (e) => {
-                performanceMode = e.target.checked;
-                HANDS_INTERVAL = performanceMode ? (1000 / 20) : (1000 / 30);
-            });
-        }
-
-        function generateShape(type) {
-            const positions = targetPositions;
-            const scale = 30;
-            if (type === 'heart') {
-                for (let i = 0; i < PARTICLE_COUNT; i++) {
-                    const t = Math.random() * Math.PI * 2;
-                    let x = 16 * Math.pow(Math.sin(t), 3);
-                    let y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-                    let z = (Math.random() - 0.5) * 10;
-                    const r = Math.random();
-                    positions[i * 3] = x * scale * 0.1 * r + (Math.random()-0.5)*2;
-                    positions[i * 3 + 1] = y * scale * 0.1 * r + (Math.random()-0.5)*2;
-                    positions[i * 3 + 2] = z * r;
-                }
-            }
-            else if (type === 'sphere') {
-                for (let i = 0; i < PARTICLE_COUNT; i++) {
-                    const radius = 40;
-                    const theta = Math.random() * Math.PI * 2;
-                    const phi = Math.acos((Math.random() * 2) - 1);
-                    positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-                    positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-                    positions[i * 3 + 2] = radius * Math.cos(phi);
-                }
-            }
-            else if (type === 'saturn') {
-                for (let i = 0; i < PARTICLE_COUNT; i++) {
-                    const r = Math.random();
-                    if (r > 0.3) {
-                        const radius = 25;
-                        const theta = Math.random() * Math.PI * 2;
-                        const phi = Math.acos((Math.random() * 2) - 1);
-                        positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-                        positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-                        positions[i * 3 + 2] = radius * Math.cos(phi);
-                    } else {
-                        const angle = Math.random() * Math.PI * 2;
-                        const ringRadius = 35 + Math.random() * 20;
-                        positions[i * 3] = Math.cos(angle) * ringRadius;
-                        positions[i * 3 + 1] = (Math.random() - 0.5) * 2;
-                        positions[i * 3 + 2] = Math.sin(angle) * ringRadius;
-                    }
-                }
-            }
-            else if (type === 'flower') {
-                for (let i = 0; i < PARTICLE_COUNT; i++) {
-                    const theta = Math.random() * Math.PI * 2;
-                    const k = 4;
-                    const r = Math.cos(k * theta) * 40;
-                    const depth = (Math.random() - 0.5) * 15;
-                    positions[i * 3] = r * Math.cos(theta) + (Math.random()-0.5)*5;
-                    positions[i * 3 + 1] = r * Math.sin(theta) + (Math.random()-0.5)*5;
-                    positions[i * 3 + 2] = Math.sin(r * 0.1) * 10 + depth;
-                }
-            }
-            else if (type === 'torus') {
-                for (let i = 0; i < PARTICLE_COUNT; i++) {
-                    const u = Math.random() * Math.PI * 2 * 3;
-                    const v = Math.random() * Math.PI * 2;
-                    const p = 2, q = 3;
-                    const r = 20 * (2 + Math.cos(q * u / p));
-                    positions[i * 3] = r * Math.cos(u) + (Math.random()-0.5)*2;
-                    positions[i * 3 + 1] = r * Math.sin(u) + (Math.random()-0.5)*2;
-                    positions[i * 3 + 2] = 20 * Math.sin(q * u / p) + (Math.random()-0.5)*2;
-                }
-            }
-            else if (type === 'fireworks') {
-                for (let i = 0; i < PARTICLE_COUNT; i++) {
-                    const theta = Math.random() * Math.PI * 2;
-                    const phi = Math.acos((Math.random() * 2) - 1);
-                    const r = Math.random() * 60;
-                    positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-                    positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-                    positions[i * 3 + 2] = r * Math.cos(phi);
-                }
-            }
-        }
-
-        window.setShape = function(shape, el) {
-            currentShape = shape;
-            generateShape(shape);
-            document.querySelectorAll('.shape-grid button').forEach(btn => btn.classList.remove('active'));
-            if (el) el.classList.add('active');
-        }
-
-        window.toggleFullScreen = function() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            const positions = particles.geometry.attributes.position.array;
-            const cp = currentPositions;
-            const tp = targetPositions;
-            const jit = jitter;
-            const s = handScale;
-            const sp = handSpread;
-
-            particles.material.color.lerp(targetColor, 0.05);
-
-            for (let i = 0, px = 0; i < PARTICLE_COUNT; i++, px += 3) {
-                const py = px + 1;
-                const pz = px + 2;
-                let tx = tp[px] * s;
-                let ty = tp[py] * s;
-                let tz = tp[pz] * s;
-                if (sp > 0.05) {
-                    tx += jit[px] * sp * 200;
-                    ty += jit[py] * sp * 200;
-                    tz += jit[pz] * sp * 200;
-                }
-                cp[px] += (tx - cp[px]) * 0.2;
-                cp[py] += (ty - cp[py]) * 0.2;
-                cp[pz] += (tz - cp[pz]) * 0.2;
-            }
-            particles.geometry.attributes.position.needsUpdate = true;
-
-            controls.update();
-            renderer.render(scene, camera);
-        }
-
-        function createTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = canvas.height = 32;
-            const ctx = canvas.getContext('2d');
-            const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-            gradient.addColorStop(0, 'rgba(255,255,255,1)');
-            gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
-            gradient.addColorStop(0.5, 'rgba(255,255,255,0.2)');
-            gradient.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 32, 32);
-            const texture = new THREE.Texture(canvas);
-            texture.needsUpdate = true;
-            return texture;
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        async function initMediaPipe() {
-            const videoElement = document.getElementById('input-video');
-            const statusDot = document.getElementById('cam-dot');
-            const statusText = document.getElementById('status-text');
-            statusText.innerText = "正在请求摄像头权限...";
-
-            const Hands = window.Hands;
-            const Camera = window.Camera;
-
-            if (!Hands || !Camera) {
-                statusText.innerText = "MediaPipe 加载失败";
-                return;
-            }
-
-            hands = new Hands({
-                locateFile: (file) => \`https://cdn.jsdelivr.net/npm/@mediapipe/hands/\${file}\`
-            });
-
-            hands.setOptions({
-                maxNumHands: 2,
-                modelComplexity: 1,
-                minDetectionConfidence: 0.5,
-                minTrackingConfidence: 0.5
-            });
-            hands.onResults(onHandsResults);
-
-            let lastHandsTime = 0;
-            cameraUtils = new Camera(videoElement, {
-                onFrame: async () => {
-                    const now = performance.now();
-                    if (now - lastHandsTime >= HANDS_INTERVAL) {
-                        lastHandsTime = now;
-                        await hands.send({image: videoElement});
-                    }
-                },
-                width: 640,
-                height: 480
-            });
-
-            cameraUtils.start().then(() => {
-                statusDot.classList.add('active');
-                statusText.innerText = "摄像头已激活 | 手势: 双手张开缩放，捏合扩散";
-            }).catch(err => {
-                statusText.innerText = "摄像头启动失败，请允许权限";
-                console.error(err);
-            });
-        }
-
-        function onHandsResults(results) {
-            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-                const landmarks = results.multiHandLandmarks;
-
-                if (landmarks.length === 2) {
-                    const hand1 = landmarks[0][9];
-                    const hand2 = landmarks[1][9];
-                    const dist = Math.abs(hand1.x - hand2.x);
-                    const targetScale = 0.5 + (dist * 2.5);
-                    handScale = handScale * 0.7 + targetScale * 0.3;
-                } else {
-                    handScale = handScale * 0.95 + 1.0 * 0.05;
-                }
-
-                let maxPinch = 0;
-                landmarks.forEach(hand => {
-                    const thumb = hand[4];
-                    const index = hand[8];
-                    const pinchDist = Math.hypot(thumb.x - index.x, thumb.y - index.y);
-                    const spread = Math.max(0, Math.min(1, (0.10 - pinchDist) / 0.05));
-                    maxPinch = Math.max(maxPinch, spread);
-                });
-                handSpread = handSpread * 0.6 + maxPinch * 0.4;
-            } else {
-                handScale = handScale * 0.95 + 1.0 * 0.05;
-                handSpread = handSpread * 0.9;
-            }
-        }
-    </script>
 </body>
 </html>
     `;
@@ -1883,4 +1602,5 @@ async function html1101(host, 访问IP) {
 </body>
 </html>`;
 }
+
 
